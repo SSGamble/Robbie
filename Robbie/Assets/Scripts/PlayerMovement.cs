@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour {
     private Rigidbody2D rb;
     private BoxCollider2D bColl;
 
-    private float xVelocity;
+    public float xVelocity;
 
     [Header("移动参数")]
     public float speed = 8f;
@@ -113,7 +113,7 @@ public class PlayerMovement : MonoBehaviour {
             pos.y -= ledgeCheck.distance; // 减去竖直射线高出的部分
             transform.position = pos;
             // 角色静止，实现悬挂
-            rb.bodyType = RigidbodyType2D.Static; 
+            rb.bodyType = RigidbodyType2D.Static;
             isHanging = true;
         }
     }
@@ -160,10 +160,10 @@ public class PlayerMovement : MonoBehaviour {
     /// </summary>
     private void FilpDirction() {
         if (xVelocity < 0) {
-            transform.localScale = new Vector2(-1, 1);
+            transform.localScale = new Vector3(-1, 1, 1);
         }
         else if (xVelocity > 0) {
-            transform.localScale = new Vector2(1, 1);
+            transform.localScale = new Vector3(1, 1, 1);
         }
     }
 
@@ -213,6 +213,7 @@ public class PlayerMovement : MonoBehaviour {
             isJump = true;
             jumpTime = Time.time + jumpHoldDuration; // 开始计算跳跃时间 = 当前跳跃时刻 + 长按时间，Time.time 是在不断增长的，eg：在游戏开始后的第 15s，按下跳跃，jumpTime = 15.1
             rb.AddForce(new Vector2(0f, jumpForce), ForceMode2D.Impulse); // 给一个向上的冲力(突然发生的)
+            AudioManager.PlayJumpAudio(); // 跳跃音效
         }
         // 长按跳跃
         else if (isJump) {
@@ -222,6 +223,7 @@ public class PlayerMovement : MonoBehaviour {
             if (jumpTime < Time.time) { // 控制时效性，如果 jumpTime < 当前的实时时间，退出跳跃状态（使这所有添加力的函数都失效），否则长按跳跃时会一直浮在空中
                 isJump = false;
             }
+            //AudioManager.PlayJumpAudio(); // 跳跃音效
         }
     }
 }
